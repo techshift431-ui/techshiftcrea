@@ -3,8 +3,8 @@ compatibility_date = "2026-08-27"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "techshiftcrea"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_name = "techshiftcrea-db"
+database_id = "c7c19ffd-3c18-4951-8630-3d369277a014"
 
 [vars]
 NOTIFY_EMAIL = "techshift431@gmail.com"
