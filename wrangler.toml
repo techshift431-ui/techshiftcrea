@@ -1,0 +1,11 @@
+name = "techshiftcrea"
+compatibility_date = "2026-08-27"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "techshiftcrea"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+[vars]
+NOTIFY_EMAIL = "techshift431@gmail.com"
+FROM_EMAIL = "TechshiftCrea <onboarding@resend.dev>"

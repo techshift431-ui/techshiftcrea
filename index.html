@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-site-verification" content="xCOkYLOUgsclMnIKTma0nKIKnrDHN42Q01AJiMNjgXQ">
+  <meta name="description" content="TechshiftCrea connects brands with relevant Indian technology, gaming, AI and gadget creators for creator partnerships and campaigns.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#f4f1ea">
+  <link rel="canonical" href="https://techshift-creators.pages.dev/">
+  <meta property="og:title" content="TechshiftCrea — Creator Partnerships">
+  <meta property="og:description" content="Creator partnerships for tech, gaming, AI and gadget brands.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://techshift-creators.pages.dev/">
+  <title>TechshiftCrea — Creator Partnerships</title>
+
+  <style>
+    :root{
+      --bg:#f4f1ea;--ink:#101114;--muted:#686967;--line:rgba(16,17,20,.12);
+      --card:rgba(255,255,255,.58);--dark:#101114;--lime:#d8ff52;--purple:#a98cff;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.45;overflow-x:hidden}
+    a{text-decoration:none;color:inherit}
+    .noise{position:fixed;inset:0;pointer-events:none;opacity:.045;z-index:20;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E")}
+    .wrap{width:min(1180px,calc(100% - 40px));margin:auto}
+    nav{position:sticky;top:0;z-index:30;background:rgba(244,241,234,.72);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .navin{height:76px;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-size:20px;font-weight:950;letter-spacing:-.045em}.logo span{opacity:.45}
+    .navlinks{display:flex;gap:25px;font-size:13px;font-weight:750}.navlinks a{opacity:.68}.navlinks a:hover{opacity:1}
+    .navbtn{padding:11px 16px;border:1px solid var(--ink);border-radius:999px;font-weight:850;font-size:13px}
+    .hero{min-height:calc(100vh - 76px);display:grid;align-items:center;padding:55px 0 85px;position:relative}
+    .hero:before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 20%,rgba(169,140,255,.13),transparent 55%);pointer-events:none}
+    .heroGrid{display:grid;grid-template-columns:1fr .95fr;gap:45px;align-items:center;position:relative}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.38);font-size:11px;font-weight:850;letter-spacing:.09em;text-transform:uppercase}
+    .dot{width:7px;height:7px;border-radius:50%;background:#68b31b;box-shadow:0 0 0 5px rgba(104,179,27,.12)}
+    h1{font-size:clamp(58px,7.2vw,100px);line-height:.9;letter-spacing:-.075em;margin:23px 0 24px;max-width:700px}
+    h1 em{font-style:normal;display:block;color:#77706a}
+    .hero p{font-size:18px;color:var(--muted);max-width:590px;margin:0}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+    .btn{padding:14px 18px;border-radius:999px;border:1px solid var(--ink);font-weight:850;font-size:13px;transition:.25s transform,.25s background}
+    .btn:hover{transform:translateY(-3px)}.btn.dark{background:var(--ink);color:#fff}.btn.light{background:rgba(255,255,255,.4)}
+    .orbStage{height:560px;position:relative;display:grid;place-items:center}
+    .halo{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(169,140,255,.27),rgba(169,140,255,0) 68%);filter:blur(10px);animation:breathe 5s ease-in-out infinite}
+    .orb{width:355px;height:355px;border-radius:50%;position:relative;background:
+      radial-gradient(circle at 31% 27%,rgba(255,255,255,.95) 0 4%,transparent 17%),
+      radial-gradient(circle at 65% 70%,rgba(0,0,0,.16),transparent 45%),
+      conic-gradient(from 25deg,#fff,#cfc4ff 19%,#fff 34%,#ded5ff 55%,#fff 73%,#bdb0ff 88%,#fff);
+      box-shadow:inset -35px -35px 55px rgba(71,55,111,.18),inset 20px 20px 40px rgba(255,255,255,.9),0 45px 100px rgba(74,62,102,.18);
+      animation:float 6s ease-in-out infinite;transform:rotateX(12deg) rotateY(-18deg)
+    }
+    .orb:before{content:"";position:absolute;inset:26px;border-radius:50%;border:14px solid rgba(255,255,255,.68);box-shadow:inset 0 0 25px rgba(105,84,160,.13)}
+    .orb:after{content:"";position:absolute;width:100px;height:100px;right:45px;top:43px;border-radius:50%;background:rgba(216,255,82,.95);filter:blur(.2px);box-shadow:20px 30px 45px rgba(73,55,0,.18);animation:drift 4s ease-in-out infinite}
+    .ring{position:absolute;width:445px;height:180px;border:1px solid rgba(16,17,20,.12);border-radius:50%;transform:rotate(-16deg);animation:spin 16s linear infinite}
+    .ring.r2{width:500px;height:210px;transform:rotate(28deg);animation-direction:reverse}
+    .spark{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--ink);left:11%;top:18%;box-shadow:0 0 0 7px rgba(16,17,20,.05);animation:blink 2.8s infinite}
+    .spark.s2{left:auto;right:7%;top:auto;bottom:19%;width:6px;height:6px;animation-delay:1s}
+    @keyframes float{0%,100%{transform:translateY(0) rotateX(12deg) rotateY(-18deg)}50%{transform:translateY(-16px) rotateX(15deg) rotateY(10deg)}}
+    @keyframes breathe{0%,100%{transform:scale(.96);opacity:.72}50%{transform:scale(1.08);opacity:1}}
+    @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(-18px,12px)}}
+    @keyframes spin{to{transform:rotate(344deg)}}
+    @keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+    section{padding:105px 0}.sectionTop{display:flex;justify-content:space-between;align-items:end;gap:35px;margin-bottom:38px}
+    .founderLine{font-size:clamp(14px,2vw,18px);font-weight:900;letter-spacing:.02em;margin:14px 0 18px}.founderLine span{opacity:.55;font-weight:700}
+    .eyebrow2{font-size:11px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:#77706a}
+    h2{font-size:clamp(39px,5vw,68px);line-height:.96;letter-spacing:-.065em;margin:10px 0 0;max-width:700px}
+    .lead{color:var(--muted);max-width:510px}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:27px;min-height:230px;box-shadow:0 20px 60px rgba(48,40,30,.04)}
+    .num{font-size:12px;font-weight:900;opacity:.45}.card h3{font-size:23px;letter-spacing:-.035em;margin:50px 0 8px}.card p{color:var(--muted);margin:0}
+    .darkSection{background:var(--dark);color:#fff}.darkSection .lead{color:#a8a8a6}.darkSection .eyebrow2{color:#8e8e8b}
+    .creatorGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.creator{border:1px solid rgba(255,255,255,.13);border-radius:25px;padding:28px;background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.025));position:relative;overflow:hidden}
+    .creator:after{content:"";position:absolute;width:170px;height:170px;border-radius:50%;right:-55px;top:-70px;background:var(--purple);filter:blur(35px);opacity:.28}
+    .creator h3{font-size:30px;letter-spacing:-.05em;margin:8px 0 3px}.creator .meta{color:#a5a5a3;font-size:13px}.tag{display:inline-block;margin-top:22px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);font-size:11px;color:#d6d6d4}
+    .creatorStats{display:flex;gap:30px;margin-top:25px}.stat b{display:block;font-size:25px}.stat span{font-size:11px;color:#8f8f8c}
+    .serviceGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:25px;overflow:hidden}
+    .service{background:var(--bg);padding:30px;min-height:170px}.service h3{margin:0 0 10px;font-size:22px}.service p{color:var(--muted);margin:0;max-width:440px}
+    .quote{padding:45px;border-radius:28px;background:#e8e3d9;border:1px solid var(--line)}.quote p{font-size:clamp(30px,4vw,52px);line-height:1.02;letter-spacing:-.06em;max-width:900px;margin:10px 0 18px}.quote small{color:var(--muted)}
+    .contact{display:grid;grid-template-columns:1fr .8fr;gap:18px;align-items:stretch}.contactBox{border-radius:27px;background:var(--dark);color:#fff;padding:34px;display:flex;flex-direction:column;justify-content:space-between}.email{font-size:24px;font-weight:900;word-break:break-word;margin:30px 0 15px}.contactBox .btn{background:var(--lime);color:#101114;border-color:var(--lime);text-align:center}
+    footer{padding:35px 0 55px;border-top:1px solid var(--line);font-size:12px;color:#77736e}.foot{display:flex;justify-content:space-between;gap:20px}
+    .reveal{opacity:0;transform:translateY(22px);animation:reveal .8s ease forwards}.d2{animation-delay:.15s}.d3{animation-delay:.3s}.d4{animation-delay:.45s}
+    @keyframes reveal{to{opacity:1;transform:none}}
+
+    .portalGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .portalCard{background:rgba(255,255,255,.62);border:1px solid var(--line);border-radius:28px;padding:30px;box-shadow:0 22px 70px rgba(48,40,30,.06)}
+    .darkPortal{background:var(--dark);color:#fff;border-color:rgba(255,255,255,.12)}
+    .portalKicker{font-size:11px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;opacity:.55}
+    .portalCard h3{font-size:32px;letter-spacing:-.055em;margin:10px 0 6px}
+    .portalCard>p{color:var(--muted);margin:0 0 24px}.darkPortal>p{color:#9e9e9b}
+    .portalCard label{display:block;font-size:12px;font-weight:850;margin-top:15px}
+    .portalCard input,.portalCard select,.portalCard textarea{width:100%;margin-top:7px;padding:13px 14px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.72);color:var(--ink);font:inherit;outline:none}
+    .darkPortal input,.darkPortal select,.darkPortal textarea{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.15)}
+    .darkPortal select option{color:#111}
+    .portalCard textarea{min-height:105px;resize:vertical}
+    .portalCard input:focus,.portalCard select:focus,.portalCard textarea:focus{border-color:#8f78ff;box-shadow:0 0 0 3px rgba(143,120,255,.12)}
+    .twoCols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .portalSubmit{width:100%;border:0;border-radius:999px;padding:15px 18px;margin-top:20px;background:var(--ink);color:#fff;font-weight:900;cursor:pointer}
+    .darkPortal .portalSubmit{background:var(--lime);color:var(--ink)}
+
+    @media(max-width:850px){.portalGrid{grid-template-columns:1fr}.twoCols{grid-template-columns:1fr}.navlinks{display:none}.wrap{width:min(100% - 28px,1180px)}.hero{padding-top:35px}.heroGrid,.contact,.creatorGrid{grid-template-columns:1fr}.orbStage{height:430px;order:-1}.orb{width:270px;height:270px}.halo{width:330px;height:330px}.ring{width:340px}.ring.r2{width:390px}.cards,.serviceGrid{grid-template-columns:1fr}.sectionTop{display:block}.sectionTop .lead{margin-top:18px}.hero h1{font-size:58px}.foot{display:block}.foot div+div{margin-top:10px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}}
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"TechshiftCrea",
+    "url":"https://techshift-creators.pages.dev/",
+    "description":"Creator partnerships for technology, gaming, AI and gadget brands in India.",
+    "email":"techshift431@gmail.com",
+    "founder":{"@type":"Person","name":"Krish Mahala"}
+  }
+  </script>
+</head>
+<body>
+<div class="noise"></div>
+
+<nav>
+  <div class="wrap navin">
+    <a class="logo" href="#">TECHSHIFT<span>CREA</span></a>
+    <div class="navlinks">
+      <a href="#brands">Brands</a><a href="#creators">Creators</a><a href="#services">Services</a><a href="#process">Process</a><a href="#brief">Brief</a>
+    </div>
+    <a class="navbtn" href="#contact">Let's talk ↗</a>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="wrap heroGrid">
+      <div>
+        <div class="eyebrow reveal"><span class="dot"></span> TECHSHIFTCREA · INDIA</div>
+        <div class="founderLine reveal d2">TECHSHIFTCREA <span>by Krish (Jhumi)</span></div>
+        <div class="reveal d3">
+          <h1>Creators that make <em>brands feel relevant.</em></h1>
+          <p>TechshiftCrea connects brands with the right technology, gaming, AI and gadget creators — without the random creator-list approach.</p>
+          <div class="actions">
+            <a class="btn dark" href="#contact">Start a brand conversation →</a>
+            <a class="btn light" href="#creators">Meet the network</a>
+          </div>
+        </div>
+      </div>
+      <div class="orbStage reveal d4" aria-hidden="true">
+        <div class="halo"></div><div class="ring"></div><div class="ring r2"></div>
+        <div class="orb"></div><span class="spark"></span><span class="spark s2"></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="brands">
+    <div class="wrap">
+      <div class="sectionTop">
+        <div><div class="eyebrow2">For brands</div><h2>Less noise. Better creator matches.</h2></div>
+        <p class="lead">We look at niche, platform, audience, language and content fit — not just follower count.</p>
+      </div>
+      <div class="cards">
+        <article class="card"><div class="num">01</div><h3>Find the fit</h3><p>Relevant creators are shortlisted around your campaign brief and target audience.</p></article>
+        <article class="card"><div class="num">02</div><h3>Make the intro</h3><p>Creator communication and initial partnership discussions stay organized in one place.</p></article>
+        <article class="card"><div class="num">03</div><h3>Move to launch</h3><p>Profiles, analytics, deliverables and next steps are shared clearly before anything goes live.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="creators" class="darkSection">
+    <div class="wrap">
+      <div class="sectionTop">
+        <div><div class="eyebrow2">Creator network</div><h2>A focused roster, not a fake number.</h2></div>
+        <p class="lead">TechshiftCrea is building a focused creator network with real relationships and transparent information.</p>
+      </div>
+      <div class="creatorGrid">
+        <article class="creator">
+          <div class="eyebrow2">Tech · Gaming</div><h3>TechyMek</h3><div class="meta">Adarsh Thakur · India</div>
+          <div class="creatorStats"><div class="stat"><b>8.58K</b><span>YouTube subscribers</span></div><div class="stat"><b>4,185</b><span>Instagram followers</span></div></div>
+          <span class="tag">@techymek · reviews · gadgets · gaming</span>
+        </article>
+        <article class="creator">
+          <div class="eyebrow2">Tamil Tech</div><h3>TamilDreamsTech</h3><div class="meta">Sakthivel Sivakumar · India</div>
+          <div class="creatorStats"><div class="stat"><b>7.56K</b><span>YouTube subscribers</span></div><div class="stat"><b>415K</b><span>Instagram followers</span></div></div>
+          <span class="tag">@TamilDreamsTech28 · @tamil_dreams_tech</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="wrap">
+      <div class="sectionTop"><div><div class="eyebrow2">What we do</div><h2>Creator-led growth, kept simple.</h2></div></div>
+      <div class="serviceGrid">
+        <article class="service"><h3>Influencer marketing</h3><p>Creator sourcing, introductions and campaign coordination for relevant audiences.</p></article>
+        <article class="service"><h3>UGC campaigns</h3><p>Short-form creator content built around products, launches and clear campaign goals.</p></article>
+        <article class="service"><h3>Bulk creator campaigns</h3><p>Multiple creators for briefs that need wider reach across a focused niche.</p></article>
+        <article class="service"><h3>Creator partnerships</h3><p>Longer-term relationships between brands and creators who genuinely fit.</p></article>
+        <article class="service"><h3>Regional campaigns</h3><p>Language and audience-specific creator selection for more relevant communication.</p></article>
+        <article class="service"><h3>Tech · Gaming · AI</h3><p>A specialist direction for brands working in technology, gaming, AI and gadgets.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="process">
+    <div class="wrap">
+      <div class="sectionTop"><div><div class="eyebrow2">Process</div><h2>Brief in. Right creators out.</h2></div><p class="lead">A simple four-step workflow designed to keep brand conversations clear.</p></div>
+      <div class="cards">
+        <article class="card"><div class="num">01</div><h3>Share the brief</h3><p>Product, objective, audience, platform, timeline, deliverables and budget.</p></article>
+        <article class="card"><div class="num">02</div><h3>We shortlist</h3><p>Creators are matched against the actual campaign instead of a generic list.</p></article>
+        <article class="card"><div class="num">03</div><h3>Review & agree</h3><p>Profiles, analytics, deliverables, pricing and usage terms are discussed.</p></article>
+      </div>
+      <div class="quote" style="margin-top:14px"><div class="eyebrow2">TechshiftCrea principle</div><p>The goal isn't the biggest creator. It's the <strong>right creator for the campaign.</strong></p><small>— Krish (Jhumi) · Founder</small></div>
+    </div>
+  </section>
+
+  
+  <section id="brief">
+    <div class="wrap">
+      <div class="sectionTop">
+        <div><div class="eyebrow2">Campaign brief</div><h2>Give us the brief. We’ll find the fit.</h2></div>
+        <p class="lead">Brands can tell us their budget, audience, creator size, content type and deliverables. Creators can share their niche, audience and collaboration expectations.</p>
+      </div>
+      <div class="portalGrid">
+        <form class="portalCard" onsubmit="return submitPortal(event,'brand')">
+          <div class="portalKicker">For brands</div><h3>Build a creator brief</h3><p>Tell TechshiftCrea what kind of creator campaign you want.</p>
+          <label>Brand / company<input name="brand" placeholder="Your brand name" required></label>
+          <label>Campaign budget<select name="budget"><option>Under ₹25,000</option><option>₹25,000–₹50,000</option><option>₹50,000–₹1 lakh</option><option>₹1–5 lakh</option><option>₹5–15 lakh</option><option>₹15 lakh+</option><option>Not sure yet</option></select></label>
+          <div class="twoCols">
+            <label>Creator size<select name="subs"><option>1K–10K</option><option>10K–50K</option><option>50K–100K</option><option>100K–500K</option><option>500K–1M</option><option>1M+</option><option>Any size</option></select></label>
+            <label>Platform<select name="platform"><option>YouTube</option><option>Instagram</option><option>Both</option><option>Other</option></select></label>
+          </div>
+          <div class="twoCols">
+            <label>Content type<select name="content"><option>Shorts / Reels</option><option>Long-form YouTube</option><option>Product review</option><option>Unboxing</option><option>UGC</option><option>Integration / sponsorship</option><option>Other</option></select></label>
+            <label>Video length<select name="length"><option>Under 30 sec</option><option>30–60 sec</option><option>1–3 min</option><option>3–8 min</option><option>8–15 min</option><option>15+ min</option><option>Flexible</option></select></label>
+          </div>
+          <label>Creator niche<select name="niche"><option>Technology</option><option>Gaming</option><option>AI</option><option>Gadgets</option><option>PC / hardware</option><option>Mobile</option><option>Mixed tech</option><option>Other</option></select></label>
+          <label>Anything else<textarea name="notes" placeholder="Product, audience, language, timeline, deliverables, usage rights, etc."></textarea></label>
+          <button class="portalSubmit" type="submit">Send brand brief →</button>
+        </form>
+
+        <form class="portalCard darkPortal" onsubmit="return submitPortal(event,'creator')">
+          <div class="portalKicker">For creators</div><h3>Join the creator network</h3><p>Share your audience, niche and the type of paid work you want.</p>
+          <label>Your name<input name="name" placeholder="Creator name" required></label>
+          <div class="twoCols">
+            <label>YouTube subscribers<input name="yt" placeholder="e.g. 25K"></label>
+            <label>Instagram followers<input name="ig" placeholder="e.g. 12K"></label>
+          </div>
+          <label>Main niche<select name="niche"><option>Technology</option><option>Gaming</option><option>AI</option><option>Gadgets</option><option>PC / hardware</option><option>Mobile</option><option>Other</option></select></label>
+          <label>Content type<select name="content"><option>Shorts / Reels</option><option>Long-form YouTube</option><option>Reviews</option><option>Unboxing</option><option>Gaming</option><option>UGC</option><option>Mixed</option></select></label>
+          <div class="twoCols">
+            <label>Typical video length<select name="length"><option>Under 30 sec</option><option>30–60 sec</option><option>1–3 min</option><option>3–8 min</option><option>8–15 min</option><option>15+ min</option></select></label>
+            <label>Expected fee<input name="fee" placeholder="₹ per integration/video"></label>
+          </div>
+          <label>Collaboration goal<select name="goal"><option>Paid sponsorships</option><option>Product reviews</option><option>Affiliate campaigns</option><option>UGC work</option><option>Long-term brand deals</option><option>Open to opportunities</option></select></label>
+          <label>Your links<textarea name="links" placeholder="YouTube / Instagram / media kit links"></textarea></label>
+          <button class="portalSubmit" type="submit">Apply to network →</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+<section id="contact" class="darkSection">
+    <div class="wrap contact">
+      <div>
+        <div class="eyebrow2">Start a conversation</div>
+        <h2>Have a creator brief?</h2>
+        <p class="lead" style="margin-top:20px">Tell us what you're planning. We'll come back with relevant creator options and a clear next step.</p>
+      </div>
+      <div class="contactBox">
+        <div><div class="eyebrow2">Business enquiries</div><h3 style="font-size:30px;margin:10px 0 0">Krish (Jhumi)</h3><div class="email">techshift431@gmail.com</div><div style="color:#9d9d9a;font-size:13px">Founder · TechshiftCrea · India</div></div>
+        <a class="btn" href="mailto:techshift431@gmail.com?subject=TechshiftCrea%20Creator%20Campaign%20Inquiry">Email TechshiftCrea →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap foot"><div><strong>TECHSHIFTCREA</strong> · Creator & Brand Partnerships</div><div>India · © 2026 TechshiftCrea</div></div></footer>
+<script>
+async function submitPortal(e,type){
+ e.preventDefault();
+ const form=e.target, btn=form.querySelector('button[type="submit"]');
+ const data=Object.fromEntries(new FormData(form).entries());
+ data.type=type;
+ btn.disabled=true; btn.textContent='Sending securely…';
+ try{
+   const r=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+   const out=await r.json();
+   if(!r.ok) throw new Error(out.error||'Could not submit');
+   form.reset();
+   btn.textContent='Submitted ✓';
+   alert(type==='brand' ? 'Thanks! Your campaign brief was sent privately to TechshiftCrea.' : 'Thanks! Your creator profile was sent privately to TechshiftCrea.');
+   setTimeout(()=>{btn.disabled=false;btn.textContent=type==='brand'?'Send brand brief →':'Apply to network →'},2500);
+ }catch(err){
+   alert('Something went wrong. Please try again or email techshift431@gmail.com.');
+   btn.disabled=false; btn.textContent=type==='brand'?'Send brand brief →':'Apply to network →';
+ }
+ return false;
+}
+</script>
+</body>
+</html>
