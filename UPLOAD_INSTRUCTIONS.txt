@@ -1,0 +1,33 @@
+TECHSHIFTCREA DASHBOARD UPGRADE
+
+Replace these files in your GitHub repository:
+
+1. admin.html
+2. functions/api/admin/login.js
+3. functions/api/admin/data.js
+
+4. NEW FILE: functions/api/admin/logout.js
+
+Do NOT replace wrangler.toml with the old copy from the original ZIP.
+
+The updated login.js fixes the session-token separator bug by encoding the
+session value and HMAC signature separately.
+
+Cloudflare Pages should automatically deploy after you commit the changes to
+the main branch.
+
+Required Production secrets:
+- ADMIN_PASSWORD (Secret)
+- ADMIN_SECRET (Secret)
+
+Required D1 binding:
+- Name: DB
+- Database: techshiftcrea-db
+
+After deployment:
+1. Open /admin.html
+2. Sign in with your ADMIN_PASSWORD
+3. The dashboard should stay open.
+4. You should see Overview, Brands, Creators, Matches, and All submissions.
+
+Never put ADMIN_PASSWORD or ADMIN_SECRET in GitHub.

@@ -1,1 +1,357 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechshiftCrea Admin</title><style>body{margin:0;font-family:Inter,system-ui;background:#101114;color:#f4f1ea}main{width:min(1100px,calc(100% - 32px));margin:40px auto}input,button,select{font:inherit;padding:12px;border-radius:10px;border:1px solid #555;background:#191a1e;color:#fff}button{cursor:pointer;background:#d8ff52;color:#101114;font-weight:800}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:#191a1e;border:1px solid #333;border-radius:18px;padding:18px;margin:12px 0}.muted{color:#aaa}.row{display:flex;gap:10px;flex-wrap:wrap}.pill{padding:6px 9px;border-radius:999px;background:#2a2b30;font-size:12px}.hidden{display:none}@media(max-width:700px){.grid{grid-template-columns:1fr}}</style></head><body><main><h1>TECHSHIFTCREA <span class="muted">Admin</span></h1><section id="login" class="card"><p>Private dashboard. Only your admin password can access submissions.</p><div class="row"><input id="pw" type="password" placeholder="Admin password"><button onclick="login()">Sign in</button></div><p id="msg" class="muted"></p></section><section id="app" class="hidden"><div class="row"><div class="pill">Creators: <b id="creators">0</b></div><div class="pill">Brands: <b id="brands">0</b></div><button onclick="load()">Refresh</button></div><div class="grid"><div><h2>Best matches</h2><div id="matches"></div></div><div><h2>Latest submissions</h2><div id="list"></div></div></div></section></main><script>let rows=[];async function login(){const r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.getElementById('pw').value})});if(!r.ok){document.getElementById('msg').textContent='Wrong password.';return}document.getElementById('login').classList.add('hidden');document.getElementById('app').classList.remove('hidden');load()}async function load(){const r=await fetch('/api/admin/data');if(r.status===401){location.reload();return}const j=await r.json();rows=j.results||[];const c=rows.filter(x=>x.type==='creator'),b=rows.filter(x=>x.type==='brand');document.getElementById('creators').textContent=c.length;document.getElementById('brands').textContent=b.length;document.getElementById('list').innerHTML=rows.slice(0,30).map(card).join('');document.getElementById('matches').innerHTML=makeMatches(b,c).slice(0,20).map(m=>`<div class="card"><b>${esc(m.brand)}</b> → <b>${esc(m.creator)}</b><div class="muted">Match score: ${m.score}%</div><div class="muted">${esc(m.reason)}</div></div>`).join('')||'<p class="muted">Submit brands and creators to see matches.</p>'}function card(x){const d=x.data||{};return `<div class="card"><div class="row"><span class="pill">${x.type}</span><span class="muted">${esc(x.created_at)}</span></div><h3>${esc(d.brand||d.name||'Unnamed')}</h3><div class="muted">${Object.entries(d).filter(([k,v])=>v).slice(0,8).map(([k,v])=>`${esc(k)}: ${esc(v)}`).join(' · ')}</div></div>`}function makeMatches(bs,cs){return bs.flatMap(b=>cs.map(c=>{let s=40,why=[];const B=b.data,C=c.data;if(B.niche&&C.niche&&B.niche===C.niche){s+=20;why.push('niche')}if(B.platform&&C.content&&((B.platform==='YouTube'&&/YouTube|Long-form|Reviews|Gaming/.test(C.content))||(B.platform==='Instagram'&&/Shorts|Reels|UGC/.test(C.content))||B.platform==='Both')){s+=15;why.push('platform/content')}if(B.subs&&C.yt&&B.subs.includes('1M+')&&/M/.test(C.yt))s+=10;if(B.content&&C.content&&B.content===C.content){s+=10;why.push('format')}if(B.length&&C.length&&B.length===C.length){s+=5;why.push('length')}return {brand:B.brand||'Brand',creator:C.name||'Creator',score:Math.min(99,s),reason:why.length?'Matches on '+why.join(', '):'Potential match — review profile'}})).sort((a,b)=>b.score-a.score)}function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TechshiftCrea — Private Dashboard</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<style>
+:root{--bg:#080a0f;--panel:#10141c;--panel2:#151a23;--line:#252c38;--text:#f5f7fb;--muted:#8f9aaa;--accent:#b8ff4d;--danger:#ff6b7a;--blue:#7da7ff;--shadow:0 20px 60px rgba(0,0,0,.28)}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 80% -10%,#182113 0,#080a0f 34%);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+a{color:inherit;text-decoration:none}
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px}
+.login{width:min(440px,100%);background:rgba(16,20,28,.94);border:1px solid var(--line);border-radius:24px;padding:32px;box-shadow:var(--shadow)}
+.brandmark{display:flex;align-items:center;gap:12px;font-weight:900;font-size:20px;letter-spacing:-.4px}
+.logo{width:40px;height:40px;border-radius:12px;background:var(--accent);color:#0a0d10;display:grid;place-items:center;font-weight:1000}
+.login h1{font-size:30px;margin:28px 0 8px;letter-spacing:-1px}
+.muted{color:var(--muted)}
+.field{display:flex;gap:10px;margin-top:22px}
+.field input{min-width:0;flex:1;background:#0b0e14;border:1px solid var(--line);color:var(--text);padding:14px 15px;border-radius:12px;outline:none}
+.field input:focus{border-color:#60704e;box-shadow:0 0 0 3px rgba(184,255,77,.08)}
+.btn{border:1px solid var(--line);background:#171c25;color:var(--text);padding:12px 15px;border-radius:11px;font-weight:750}
+.btn.primary{background:var(--accent);color:#0a0d10;border-color:var(--accent)}
+.btn.ghost{background:transparent}
+.btn.danger{color:#ff9aa5}
+.msg{min-height:22px;margin:12px 0 0;color:#ff9aa5}
+
+.app{min-height:100vh;display:grid;grid-template-columns:240px 1fr}
+.sidebar{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);background:rgba(9,12,17,.92);padding:22px 16px;display:flex;flex-direction:column}
+.side-brand{padding:4px 8px 24px}
+.side-brand small{display:block;color:var(--muted);font-weight:600;margin-top:3px}
+.nav{display:grid;gap:7px}
+.nav button{width:100%;text-align:left;border:1px solid transparent;background:transparent;color:#aeb7c6;padding:12px;border-radius:11px;font-weight:700}
+.nav button.active,.nav button:hover{background:#141922;color:#fff;border-color:#232b37}
+.nav .count{float:right;background:#242c38;color:#cdd5e0;padding:1px 7px;border-radius:99px;font-size:11px}
+.side-bottom{margin-top:auto;display:grid;gap:10px}
+.main{min-width:0}
+.topbar{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;gap:15px;background:rgba(8,10,15,.78);backdrop-filter:blur(12px);position:sticky;top:0;z-index:5}
+.topbar-title{font-size:17px;font-weight:850}
+.topbar-actions{display:flex;gap:8px}
+.content{max-width:1500px;margin:auto;padding:28px}
+.hero{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:24px}
+.hero h1{margin:0;font-size:32px;letter-spacing:-1.2px}
+.hero p{margin:6px 0 0;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}
+.stat{background:linear-gradient(180deg,#121720,#0f131a);border:1px solid var(--line);border-radius:16px;padding:19px}
+.stat .label{color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.stat .num{font-size:30px;font-weight:900;margin-top:5px}
+.stat .sub{color:#727d8e;font-size:12px;margin-top:3px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.search{flex:1;min-width:220px;background:#0e1219;border:1px solid var(--line);color:#fff;border-radius:11px;padding:12px 14px;outline:none}
+.select{background:#0e1219;border:1px solid var(--line);color:#fff;border-radius:11px;padding:12px 14px}
+.panel{background:#0f131a;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line)}
+.panel-head h2{font-size:16px;margin:0}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.card{background:#10151d;border:1px solid var(--line);border-radius:16px;padding:17px;transition:.16s transform,.16s border-color}
+.card:hover{transform:translateY(-2px);border-color:#374151}
+.card-top{display:flex;justify-content:space-between;gap:12px;align-items:start}
+.card h3{margin:0 0 4px;font-size:16px}
+.badge{display:inline-flex;align-items:center;border:1px solid #303846;background:#171c25;border-radius:99px;padding:4px 8px;font-size:10px;text-transform:uppercase;font-weight:850;letter-spacing:.5px}
+.badge.brand{color:#d7e8ff}.badge.creator{color:#dfffae}
+.meta{color:var(--muted);font-size:12px;margin-top:10px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tag{font-size:11px;background:#171d26;color:#b9c3d2;border-radius:8px;padding:5px 7px}
+.card-actions{display:flex;gap:7px;margin-top:15px}
+.card-actions .btn{padding:8px 10px;font-size:12px}
+.empty{padding:42px 20px;text-align:center;color:var(--muted)}
+.matches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.match{padding:16px;border:1px solid var(--line);border-radius:15px;background:#10151d}
+.match-row{display:flex;justify-content:space-between;gap:10px}
+.score{font-size:18px;font-weight:900;color:var(--accent)}
+.reason{font-size:12px;color:var(--muted);margin-top:6px}
+.section{display:none}.section.active{display:block}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th,td{text-align:left;padding:13px 15px;border-bottom:1px solid #1f2631;vertical-align:top}
+th{color:#8e99aa;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+td{font-size:13px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.68);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
+.overlay.show{display:flex}
+.modal{width:min(760px,100%);max-height:90vh;overflow:auto;background:#10151d;border:1px solid #313a48;border-radius:20px;box-shadow:var(--shadow)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:19px 20px;border-bottom:1px solid var(--line)}
+.modal-head h2{margin:0;font-size:18px}
+.modal-body{padding:20px}
+.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.detail{background:#0c1016;border:1px solid #202733;border-radius:12px;padding:12px}
+.detail .k{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#7f8a9b;font-weight:800}
+.detail .v{margin-top:3px;word-break:break-word}
+.mobile-nav{display:none}
+@media(max-width:1000px){.cards{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){
+ .app{display:block}.sidebar{display:none}.mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#0b0e14;border-top:1px solid var(--line);z-index:10;padding:8px;gap:6px}.mobile-nav button{flex:1;border:0;background:transparent;color:#9aa5b5;padding:9px 4px;border-radius:9px;font-size:11px;font-weight:800}.mobile-nav button.active{background:#171d26;color:#fff}.topbar{padding:0 15px}.content{padding:20px 15px 85px}.hero{display:block}.hero .btn{margin-top:15px}.cards,.matches{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.detail-grid{grid-template-columns:1fr}.field{display:grid}.field .btn{width:100%}}
+</style>
+</head>
+<body>
+<div id="loginView" class="login-wrap">
+  <div class="login">
+    <div class="brandmark"><div class="logo">T</div><div>TECHSHIFTCREA</div></div>
+    <h1>Private dashboard</h1>
+    <p class="muted">Manage creator applications, brand briefs and potential campaign matches.</p>
+    <form id="loginForm" class="field">
+      <input id="pw" type="password" autocomplete="current-password" placeholder="Admin password" required>
+      <button class="btn primary" type="submit">Sign in</button>
+    </form>
+    <div id="loginMsg" class="msg"></div>
+  </div>
+</div>
+
+<div id="appView" class="app hidden">
+  <aside class="sidebar">
+    <div class="side-brand">
+      <div class="brandmark"><div class="logo">T</div><div>TECHSHIFTCREA</div></div>
+      <small>Creator × Brand CRM</small>
+    </div>
+    <nav class="nav">
+      <button data-section="overview" class="active">Overview</button>
+      <button data-section="brands">Brands <span id="sideBrands" class="count">0</span></button>
+      <button data-section="creators">Creators <span id="sideCreators" class="count">0</span></button>
+      <button data-section="matches">Matches <span id="sideMatches" class="count">0</span></button>
+      <button data-section="submissions">All submissions <span id="sideAll" class="count">0</span></button>
+    </nav>
+    <div class="side-bottom">
+      <button id="refreshBtn" class="btn">↻ Refresh data</button>
+      <button id="logoutBtn" class="btn ghost danger">Log out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-title" id="pageTitle">Overview</div>
+      <div class="topbar-actions"><button id="mobileRefresh" class="btn">↻</button></div>
+    </header>
+
+    <div class="content">
+      <section id="overview" class="section active">
+        <div class="hero">
+          <div><h1>Good to see you, Krish.</h1><p>Your private creator-brand pipeline at a glance.</p></div>
+          <button class="btn primary" onclick="showSection('matches')">Find matches →</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="label">Total submissions</div><div class="num" id="statAll">0</div><div class="sub">All incoming forms</div></div>
+          <div class="stat"><div class="label">Brands</div><div class="num" id="statBrands">0</div><div class="sub">Campaign opportunities</div></div>
+          <div class="stat"><div class="label">Creators</div><div class="num" id="statCreators">0</div><div class="sub">Creator applications</div></div>
+          <div class="stat"><div class="label">Potential matches</div><div class="num" id="statMatches">0</div><div class="sub">Sorted by fit score</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Best current matches</h2><button class="btn" onclick="showSection('matches')">View all</button></div>
+          <div id="overviewMatches" class="matches" style="padding:16px"></div>
+        </div>
+      </section>
+
+      <section id="brands" class="section">
+        <div class="hero"><div><h1>Brands</h1><p>Campaign briefs submitted through your public site.</p></div></div>
+        <div class="toolbar"><input id="brandSearch" class="search" placeholder="Search brands, niche, platform..."><select id="brandSort" class="select"><option value="new">Newest first</option><option value="name">Name A–Z</option></select></div>
+        <div id="brandCards" class="cards"></div>
+      </section>
+
+      <section id="creators" class="section">
+        <div class="hero"><div><h1>Creators</h1><p>Creator applications and partnership profiles.</p></div></div>
+        <div class="toolbar"><input id="creatorSearch" class="search" placeholder="Search creators, niche, platform..."><select id="creatorSort" class="select"><option value="new">Newest first</option><option value="name">Name A–Z</option></select></div>
+        <div id="creatorCards" class="cards"></div>
+      </section>
+
+      <section id="matches" class="section">
+        <div class="hero"><div><h1>Best matches</h1><p>Potential brand × creator fits based on the submitted requirements.</p></div></div>
+        <div class="toolbar"><input id="matchSearch" class="search" placeholder="Search brand or creator..."><select id="matchMin" class="select"><option value="0">All scores</option><option value="70">70%+</option><option value="80">80%+</option><option value="90">90%+</option></select></div>
+        <div id="matchCards" class="matches"></div>
+      </section>
+
+      <section id="submissions" class="section">
+        <div class="hero"><div><h1>All submissions</h1><p>Newest submissions are shown first.</p></div></div>
+        <div class="toolbar"><input id="allSearch" class="search" placeholder="Search any submission..."><select id="typeFilter" class="select"><option value="all">All types</option><option value="brand">Brands</option><option value="creator">Creators</option></select></div>
+        <div class="panel table-wrap"><table><thead><tr><th>Type</th><th>Name</th><th>Key details</th><th>Received</th><th></th></tr></thead><tbody id="submissionTable"></tbody></table></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<nav class="mobile-nav">
+  <button data-section="overview" class="active">Home</button>
+  <button data-section="brands">Brands</button>
+  <button data-section="creators">Creators</button>
+  <button data-section="matches">Matches</button>
+  <button data-section="submissions">All</button>
+</nav>
+
+<div id="modal" class="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head"><h2 id="modalTitle">Details</h2><button class="btn" onclick="closeModal()">Close</button></div>
+    <div id="modalBody" class="modal-body"></div>
+  </div>
+</div>
+
+<script>
+let rows=[], matches=[];
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const val=(d,keys)=>{for(const k of keys){if(d[k]!==undefined&&d[k]!==null&&String(d[k]).trim())return String(d[k])}return ''};
+const norm=s=>String(s||'').toLowerCase();
+const blob=d=>Object.entries(d||{}).map(([k,v])=>`${k} ${v}`).join(' ').toLowerCase();
+
+async function api(path,options={}){
+  const r=await fetch(path,{...options,credentials:'same-origin',cache:'no-store'});
+  let j={}; try{j=await r.json()}catch{}
+  if(!r.ok){const e=new Error(j.error||`Request failed (${r.status})`);e.status=r.status;throw e}
+  return j;
+}
+
+async function login(){
+  $('loginMsg').textContent='Signing in…';
+  try{
+    await api('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:$('pw').value})});
+    $('pw').value='';
+    $('loginView').classList.add('hidden');
+    $('appView').classList.remove('hidden');
+    await load();
+  }catch(e){$('loginMsg').textContent=e.status===401?'Wrong password.':'Could not sign in. Please try again.'}
+}
+$('loginForm').addEventListener('submit',e=>{e.preventDefault();login()});
+
+async function load(){
+  try{
+    const j=await api('/api/admin/data');
+    rows=(j.results||[]).map(x=>({...x,data:x.data||{}}));
+    matches=makeMatches(rows.filter(x=>x.type==='brand'),rows.filter(x=>x.type==='creator'));
+    renderAll();
+  }catch(e){
+    if(e.status===401){
+      $('appView').classList.add('hidden');$('loginView').classList.remove('hidden');
+      $('loginMsg').textContent='Your session expired. Please sign in again.';
+    }else alert('Could not load submissions.');
+  }
+}
+
+async function logout(){
+  try{await fetch('/api/admin/logout',{method:'POST',credentials:'same-origin'})}catch{}
+  $('appView').classList.add('hidden');$('loginView').classList.remove('hidden');$('loginMsg').textContent='';$('pw').focus();
+}
+$('logoutBtn').onclick=logout;$('refreshBtn').onclick=load;$('mobileRefresh').onclick=load;
+
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));
+  document.querySelectorAll('[data-section]').forEach(b=>b.classList.toggle('active',b.dataset.section===id));
+  const names={overview:'Overview',brands:'Brands',creators:'Creators',matches:'Best matches',submissions:'All submissions'};
+  $('pageTitle').textContent=names[id]||'Dashboard';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>showSection(b.dataset.section));
+
+function renderAll(){
+  const brands=rows.filter(x=>x.type==='brand'), creators=rows.filter(x=>x.type==='creator');
+  $('statAll').textContent=rows.length;$('statBrands').textContent=brands.length;$('statCreators').textContent=creators.length;$('statMatches').textContent=matches.length;
+  $('sideBrands').textContent=brands.length;$('sideCreators').textContent=creators.length;$('sideMatches').textContent=matches.length;$('sideAll').textContent=rows.length;
+  $('overviewMatches').innerHTML=matches.slice(0,4).map(matchHTML).join('')||empty('No brand + creator matches yet.');
+  renderBrands();renderCreators();renderMatches();renderSubmissions();
+}
+
+function cardHTML(x){
+  const d=x.data, isBrand=x.type==='brand';
+  const name=val(d,isBrand?['brand','company','company_name','name']:['name','creator','channel','channel_name'])||'Unnamed';
+  const niche=val(d,['niche','category','industry','content_category']);
+  const platform=val(d,['platform','platforms']);
+  const budget=val(d,['budget','budget_range','campaign_budget']);
+  const audience=val(d,['subs','followers','subscribers','audience_size']);
+  const format=val(d,['content','content_type','deliverables','format']);
+  const tags=[niche,platform,format].filter(Boolean).slice(0,3);
+  return `<div class="card">
+    <div class="card-top"><div><h3>${esc(name)}</h3><div class="meta">${esc(isBrand?(budget||'Campaign brief'):(audience||'Creator profile'))}</div></div><span class="badge ${isBrand?'brand':'creator'}">${isBrand?'Brand':'Creator'}</span></div>
+    <div class="tags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+    <div class="meta">${esc(platform||'Platform not specified')}</div>
+    <div class="card-actions"><button class="btn" onclick="openDetails(${x.id})">View details</button>${isBrand?`<button class="btn primary" onclick="showMatchesFor(${x.id})">Find creators</button>`:''}</div>
+  </div>`;
+}
+function filterCards(type,query,sort){
+  let a=rows.filter(x=>x.type===type);
+  const q=norm(query);if(q)a=a.filter(x=>blob(x.data).includes(q));
+  if(sort==='name')a.sort((a,b)=>blob(a.data).localeCompare(blob(b.data)));else a.sort((a,b)=>b.id-a.id);
+  return a;
+}
+function renderBrands(){const a=filterCards('brand',$('brandSearch').value,$('brandSort').value);$('brandCards').innerHTML=a.map(cardHTML).join('')||empty('No brands found.')}
+function renderCreators(){const a=filterCards('creator',$('creatorSearch').value,$('creatorSort').value);$('creatorCards').innerHTML=a.map(cardHTML).join('')||empty('No creators found.')}
+$('brandSearch').oninput=renderBrands;$('brandSort').onchange=renderBrands;$('creatorSearch').oninput=renderCreators;$('creatorSort').onchange=renderCreators;
+
+function makeMatches(bs,cs){
+  return bs.flatMap(b=>cs.map(c=>{
+    const B=b.data,C=c.data;let score=35,why=[];
+    const bn=norm(val(B,['niche','category','industry'])),cn=norm(val(C,['niche','category','content_category']));
+    if(bn&&cn){
+      if(bn===cn){score+=28;why.push('niche match')}
+      else if(bn.includes(cn)||cn.includes(bn)){score+=16;why.push('related niche')}
+    }
+    const bp=norm(val(B,['platform','platforms'])),cp=norm(val(C,['platform','platforms','content']));
+    if(bp&&cp&&(bp==='both'||cp.includes(bp)||bp.includes('both'))){score+=16;why.push('platform fit')}
+    const bf=norm(val(B,['content','content_type','deliverables','format'])),cf=norm(val(C,['content','content_type','deliverables','format']));
+    if(bf&&cf){
+      const terms=['review','unboxing','short','shorts','reel','reels','gaming','integration','ugc','tutorial'];
+      const overlap=terms.some(t=>bf.includes(t)&&cf.includes(t));
+      if(overlap){score+=10;why.push('content format fit')}
+    }
+    const ba=norm(val(B,['subs','followers','subscribers','audience_size'])),ca=norm(val(C,['yt','youtube','subs','followers','subscribers','audience_size']));
+    if(ba&&ca){
+      if((ba.includes('1k')||ba.includes('1–10k')||ba.includes('1-10k'))&&ca.includes('k')){score+=6;why.push('audience range')}
+      else if(ba.includes('10k')&&ca.includes('k')){score+=4;why.push('audience fit')}
+    }
+    return {brandId:b.id,creatorId:c.id,brand:val(B,['brand','company','company_name','name'])||'Brand',creator:val(C,['name','creator','channel','channel_name'])||'Creator',score:Math.min(99,score),reason:why.length?why.join(' • '):'Potential fit — review details'};
+  })).sort((a,b)=>b.score-a.score);
+}
+function matchHTML(m){
+  return `<div class="match"><div class="match-row"><div><b>${esc(m.brand)}</b> <span class="muted">→</span> <b>${esc(m.creator)}</b></div><div class="score">${m.score}%</div></div><div class="reason">${esc(m.reason)}</div><div style="margin-top:10px"><button class="btn" onclick="openPair(${m.brandId},${m.creatorId})">Review fit</button></div></div>`;
+}
+function renderMatches(){
+  const q=norm($('matchSearch').value),min=Number($('matchMin').value||0);
+  const a=matches.filter(m=>m.score>=min&&(!q||norm(`${m.brand} ${m.creator}`).includes(q)));
+  $('matchCards').innerHTML=a.map(matchHTML).join('')||empty('No matches meet the current filters.');
+}
+$('matchSearch').oninput=renderMatches;$('matchMin').onchange=renderMatches;
+
+function renderSubmissions(){
+  const q=norm($('allSearch').value),type=$('typeFilter').value;
+  const a=rows.filter(x=>(type==='all'||x.type===type)&&(!q||blob(x.data).includes(q))).sort((a,b)=>b.id-a.id);
+  $('submissionTable').innerHTML=a.map(x=>{
+    const name=val(x.data,x.type==='brand'?['brand','company','company_name','name']:['name','creator','channel','channel_name'])||'Unnamed';
+    const details=Object.entries(x.data).filter(([k,v])=>v).slice(0,3).map(([k,v])=>`${esc(k)}: ${esc(v)}`).join(' • ');
+    return `<tr><td><span class="badge ${x.type==='brand'?'brand':'creator'}">${esc(x.type)}</span></td><td><b>${esc(name)}</b></td><td class="muted">${details}</td><td class="muted">${esc(x.created_at||'')}</td><td><button class="btn" onclick="openDetails(${x.id})">View</button></td></tr>`;
+  }).join('')||`<tr><td colspan="5">${empty('No submissions found.')}</td></tr>`;
+}
+$('allSearch').oninput=renderSubmissions;$('typeFilter').onchange=renderSubmissions;
+
+function empty(t){return `<div class="empty">${esc(t)}</div>`}
+function getRow(id){return rows.find(x=>x.id===id)}
+function openDetails(id){
+  const x=getRow(id);if(!x)return;const d=x.data||{};
+  const name=val(d,x.type==='brand'?['brand','company','company_name','name']:['name','creator','channel','channel_name'])||'Unnamed';
+  $('modalTitle').textContent=name;
+  $('modalBody').innerHTML=`<div class="tags" style="margin:0 0 15px"><span class="badge ${x.type==='brand'?'brand':'creator'}">${esc(x.type)}</span><span class="tag">Submission #${x.id}</span></div><div class="detail-grid">${Object.entries(d).map(([k,v])=>`<div class="detail"><div class="k">${esc(k.replaceAll('_',' '))}</div><div class="v">${esc(v||'—')}</div></div>`).join('')}</div><p class="muted" style="margin-top:16px">Received: ${esc(x.created_at||'')}</p>`;
+  $('modal').classList.add('show');
+}
+function openPair(bid,cid){
+  const b=getRow(bid),c=getRow(cid);if(!b||!c)return;
+  const m=matches.find(x=>x.brandId===bid&&x.creatorId===cid);
+  $('modalTitle').textContent=`${m?.brand||'Brand'} × ${m?.creator||'Creator'}`;
+  $('modalBody').innerHTML=`<div class="match" style="margin-bottom:16px"><div class="match-row"><b>Potential fit</b><span class="score">${m?.score||0}%</span></div><div class="reason">${esc(m?.reason||'')}</div></div><div class="detail-grid"><div><h3>Brand brief</h3>${detailsHTML(b.data)}</div><div><h3>Creator profile</h3>${detailsHTML(c.data)}</div></div>`;
+  $('modal').classList.add('show');
+}
+function detailsHTML(d){return `<div class="detail-grid">${Object.entries(d||{}).slice(0,14).map(([k,v])=>`<div class="detail"><div class="k">${esc(k.replaceAll('_',' '))}</div><div class="v">${esc(v||'—')}</div></div>`).join('')}</div>`}
+function closeModal(){$('modal').classList.remove('show')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+function showMatchesFor(id){showSection('matches');$('matchSearch').value=val(getRow(id)?.data||{},['brand','company','company_name','name']);renderMatches()}
+
+load();
+</script>
+</body>
+</html>

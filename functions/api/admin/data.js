@@ -1,6 +1,87 @@
-export async function onRequestGet({request,env}){
- if(!(await valid(request,env))) return new Response(JSON.stringify({error:'Unauthorized'}),{status:401,headers:{'Content-Type':'application/json'}});
- const {results}=await env.DB.prepare('SELECT id,type,data,created_at FROM submissions ORDER BY id DESC LIMIT 500').all();
- return new Response(JSON.stringify({results:results.map(r=>({...r,data:JSON.parse(r.data)}))}),{headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
+export async function onRequestGet({ request, env }) {
+  if (!(await valid(request, env))) {
+    return json({ error: "Unauthorized" }, 401);
+  }
+
+  const { results } = await env.DB
+    .prepare(
+      "SELECT id,type,data,created_at FROM submissions ORDER BY id DESC LIMIT 500"
+    )
+    .all();
+
+  return json({
+    results: results.map(row => ({
+      ...row,
+      data: safeParse(row.data)
+    }))
+  }, 200);
 }
-async function valid(request,env){const c=request.headers.get('Cookie')||'';const m=c.match(/(?:^|; )tsc_admin=([^;]+)/);if(!m)return false;try{const raw=atob(m[1]);const i=raw.lastIndexOf('.');if(i<0)return false;const value=raw.slice(0,i), b64=raw.slice(i+1);if(!value.startsWith('admin:')||Date.now()>Number(value.slice(6)))return false;const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(env.ADMIN_SECRET||env.ADMIN_PASSWORD),{name:'HMAC',hash:'SHA-256'},false,['verify']);const bytes=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));return crypto.subtle.verify('HMAC',key,bytes,new TextEncoder().encode(value));}catch{return false;}}
+
+async function valid(request, env) {
+  const cookie = request.headers.get("Cookie") || "";
+  const match = cookie.match(/(?:^|;\s*)tsc_admin=([^;]+)/);
+  if (!match) return false;
+
+  try {
+    const token = match[1];
+    const separator = token.indexOf(".");
+    if (separator <= 0) return false;
+
+    const value = fromBase64url(token.slice(0, separator));
+    const signature = fromBase64urlBytes(token.slice(separator + 1));
+
+    if (!value.startsWith("admin:")) return false;
+
+    const expiresAt = Number(value.slice(6));
+    if (!Number.isFinite(expiresAt) || Date.now() > expiresAt) return false;
+
+    const secret = env.ADMIN_SECRET || env.ADMIN_PASSWORD;
+    if (!secret) return false;
+
+    const key = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(secret),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["verify"]
+    );
+
+    return crypto.subtle.verify(
+      "HMAC",
+      key,
+      signature,
+      new TextEncoder().encode(value)
+    );
+  } catch {
+    return false;
+  }
+}
+
+function safeParse(value) {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return {};
+  }
+}
+
+function fromBase64url(text) {
+  const normalized = text.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = normalized + "=".repeat((4 - normalized.length % 4) % 4);
+  return atob(padded);
+}
+
+function fromBase64urlBytes(text) {
+  const binary = fromBase64url(text);
+  return Uint8Array.from(binary, char => char.charCodeAt(0));
+}
+
+function json(body, status) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store"
+    }
+  });
+}
